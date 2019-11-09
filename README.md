@@ -1,2 +1,2 @@
 # english-note
-Note taking website for English learner 
+Note taking website for English learners
