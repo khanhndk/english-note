@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/7.0.4/jsoneditor.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/7.0.4/jsoneditor.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+<div id="jsoneditor" style="margin: 10px auto; max-width:600px;"></div>
+<div id="log" style="margin: 10px auto;max-width:600px;font-family: monospace;background-color: antiquewhite;border: solid 1px;padding: 5px; display: none"></div>
+<div style="margin: 10px auto; max-width:600px; text-align: center">
+<button style="
+    background-color: #3883fa;
+    border: none;
+    padding: 10px;
+    margin: 5px auto;
+    color: white;
+" onclick="submit()">SAVE</button>
+</div>
+</body>
+<script>
+    var word = "{{word}}"
+    // create the editor
+    const container = document.getElementById("jsoneditor")
+    const options = {}
+    const editor = new JSONEditor(container, options)
+
+    // set json
+    {% autoescape false %}
+    const initialJson = {{word_info}}
+    {% endautoescape %}
+    editor.set(initialJson)
+
+    // get json
+
+    function submit(){
+        $("#log").css("display", "block");
+        $("#log").html("saving ...");
+        data = JSON.stringify(editor.get());
+        var posting = $.post('s', {w: word, data: data});
+
+        posting.done(function( response ) {
+            $("#log").html(response)
+        });
+    }
+</script>
+</html>

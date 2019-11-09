@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block body %}
+
+  <div class="blog-card">
+    <div class="description">
+      <h1>
+          {{ word_info.name }}
+      </h1><h1 style="margin-top: -10px;">
+          <span class="pronun">
+          [{% for p in word_info.pronunciation %}
+            {{ p }},
+          {% endfor %}]
+          </span>
+      </h1>
+      <h2>
+          {% for f in word_info.family %}
+          <span class="family">{{ f }}</span>
+          {% endfor %}
+      </h2>
+      {% for ii in range(word_info.meanings|length)  %}
+        <p>
+            <span class="meaning_number">{{ii+1}}</span>
+            <span class="meaning_pos">{{word_info.meanings[ii].pos}}</span>
+            <span class="meaning_explain">{{word_info.meanings[ii].explain}}</span>
+            {% for t in word_info.meanings[ii].thesaurus %}
+                <span class="meaning_thesaurus">{{t}}</span>
+            {% endfor %}
+            {% for s in word_info.meanings[ii].synonyms %}
+                <span class="meaning_synonyms">{{s}}</span>
+            {% endfor %}
+        </p>
+        {% for ex in word_info.meanings[ii].examples  %}
+            {% autoescape false %}
+            <span class="meaning_example">&#8226; {{ex| replace(word_info.name, "<span>"+ word_info.name + "</span>")}}</span><br/>
+            {% endautoescape %}
+        {% endfor %}
+
+      {% endfor %}
+  </div>
+
+  </div>
+
+{% endblock %}
