@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block heading %}
+<script src="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/js/medium-editor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rangy/1.3.0/rangy-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rangy/1.3.0/rangy-classapplier.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/medium-editor/5.23.3/css/themes/beagle.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+<link rel="stylesheet" href="static/css/topic.css">
+{% endblock %}
+{% block body %}
+
+<div class="blog-card">
+    <div class="description">
+        <h1>{{topic}}</h1>
+        <h2 style="color:#1A237E">
+            Question #{{qid}}: <input id="question" type="text" style="width:100%" value="{{question_info.question}}"/>
+        </h2>
+        {% autoescape false %}
+        <div id="editor" class="editable sentence" style="min-height: unset;">{{question_info.answer}}</div>
+        {% endautoescape %}
+    </div>
+
+</div>
+<script>
+    rangy.init();
+    var HighlighterButton = MediumEditor.Extension.extend({
+    name: 'highlighter',
+    init: function () {
+        this.classApplier = rangy.createClassApplier('highlight', {
+            elementTagName: 'span',
+            normalize: true
+        });
+        this.button = this.document.createElement('button');
+        this.button.classList.add('medium-editor-action');
+        this.button.innerHTML = '<i class="fa fa-paint-brush"></i>';
+        this.button.title = 'Highlight';
+        this.on(this.button, 'click', this.handleClick.bind(this));
+        this.subscribe('editableKeydown', this.handleKeypress.bind(this));
+    },
+
+    getButton: function () {
+        return this.button;
+    },
+
+    handleKeypress: function(event){
+        if (event.ctrlKey && (event.key=="i")){
+            this.classApplier.toggleSelection();
+            this.base.checkContentChanged();
+        }
+    },
+
+    handleClick: function (event) {
+        this.classApplier.toggleSelection();
+        // Ensure the editor knows about an html change so watchers are notified
+        // ie: <textarea> elements depend on the editableInput event to stay synchronized
+        this.base.checkContentChanged();
+    }
+    });
+    var DictionaryButton = MediumEditor.Extension.extend({
+    name: 'dictionary',
+    init: function () {
+        this.classApplier = rangy.createClassApplier('dictionary', {
+            elementTagName: 'span',
+            normalize: true,
+        });
+        this.button = this.document.createElement('button');
+        this.button.classList.add('medium-editor-action');
+        this.button.innerHTML = '<i class="fa fa-book"></i>';
+        this.button.title = 'Dictionary';
+        this.on(this.button, 'click', this.handleClick.bind(this));
+        this.subscribe('editableKeydown', this.handleKeypress.bind(this));
+    },
+
+    getButton: function () {
+        return this.button;
+    },
+
+    handleKeypress: function(event){
+        if (event.ctrlKey && (event.key=="b")){
+            this.classApplier.toggleSelection();
+            this.base.checkContentChanged();
+        }
+    },
+
+    handleClick: function (event) {
+        this.classApplier.toggleSelection();
+        this.base.checkContentChanged();
+    }
+    });
+    var editor = new MediumEditor('.editable', {
+    toolbar: {
+        buttons: ['highlighter','dictionary']
+    },
+    buttonLabels: 'fontawesome',
+    extensions: {
+        'highlighter': new HighlighterButton(),
+        'dictionary': new DictionaryButton(),
+    },
+    keyboardCommands: {
+        commands: [
+        {
+            command: '',
+            key: 'B',
+            meta: true,
+            shift: false,
+            alt: false
+        },
+        {
+            command: '',
+            key: 'I',
+            meta: true,
+            shift: false,
+            alt: false
+        }]
+    },
+    });
+
+    var is_updating = false;
+    document.getElementById("editor").addEventListener("DOMCharacterDataModified", function() {
+        if (!is_updating)
+            update_answer();
+    }, false);
+
+    var qid = "{{qid}}";
+    var topic = "{{topic}}"
+
+    function update_answer(){
+        is_updating = true;
+        console.log('updating');
+        question = document.getElementById("question").value
+        answer = editor.getContent()
+
+        var posting = $.post('qa', {t: topic, qid: qid, q: question, a: answer});
+
+        posting.done(function( response ) {
+            console.log('done');
+            is_updating = false;
+        });
+
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,143 @@
+.tooltip {
+	display: inline;
+	position: relative;
+	z-index: 999;
+}
+
+/* Trigger text */
+
+.tooltip-item {
+	cursor: pointer;
+	display: inline-block;
+	font-weight: 700;
+}
+
+/* Gap filler */
+
+.tooltip-item::after {
+	content: '';
+	position: absolute;
+	width: 360px;
+	height: 20px;
+	bottom: 100%;
+	left: 50%;
+	pointer-events: none;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+}
+
+.tooltip:hover .tooltip-item::after {
+	pointer-events: auto;
+}
+
+/* Tooltip */
+
+.tooltip-content {
+	position: absolute;
+	z-index: 9999;
+	width: 360px;
+	left: 50%;
+	margin: 0px 0 20px -180px;
+	top: 100%;
+	text-align: left;
+	font-size: 0.765em;
+	line-height: 1.4;
+	box-shadow: -5px -5px 15px rgba(48,54,61,0.2);
+	background: #2a3035;
+	opacity: 0;
+	cursor: default;
+	pointer-events: none;
+
+	width: 180px;
+	margin-left: -90px;
+	-webkit-transform-origin: 50% calc(100% + 6em);
+	transform-origin: calc(100% + 6em) 50% ;
+	-webkit-transform: rotate3d(0,0,1,-15deg);
+	transform: rotate3d(0,0,1,-15deg);
+	-webkit-transition: opacity 0.2s, -webkit-transform 0.2s;
+	transition: opacity 0.2s, transform 0.2s;
+	-webkit-transition-timing-function: ease, cubic-bezier(.17,.67,.4,1.39);
+	transition-timing-function: ease, cubic-bezier(.17,.67,.4,1.39);
+}
+
+
+.tooltip:hover .tooltip-content {
+	pointer-events: auto;
+	opacity: 1;
+	-webkit-transform: translate3d(0,0,0) rotate3d(0,0,0,0);
+	transform: translate3d(0,0,0) rotate3d(0,0,0,0);
+}
+
+
+/* Arrow */
+
+.tooltip-content::before {
+	content: '';
+	bottom: 100%;
+	left: 50%;
+	border: solid transparent;
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: transparent;
+	border-bottom-color: #2a3035;
+	border-width: 5px;
+	margin-left: -5px;
+}
+
+/* Tooltip content*/
+
+.tooltip-content img {
+	position: relative;
+	height: 170px;
+	display: block;
+	float: left;
+	margin-right: 1em;
+}
+
+.tooltip-text {
+	font-size: 0.68em;
+	line-height: 1.35;
+	display: block;
+	padding: 1.21em;
+	color: #fff;
+}
+
+.tooltip-text a {
+	font-weight: bold;
+}
+
+.tooltip_meaning_number{
+}
+.meaning_pos{
+    background-color: darkseagreen;
+    padding: 3px 5px 3px 5px;
+    border-radius: 25px;
+    font-size: x-small;
+    color: darkgreen;
+}
+.tooltip_meaning_explain{
+    font-style: italic;
+}
+.tooltip_meaning_thesaurus{
+    color: #4CAF50;
+}
+.meaning_synonyms{
+    background-color: #B2DFDB;
+    padding: 3px 5px 3px 5px;
+    border-radius: 25px;
+    font-size: x-small;
+    color: #004D40;
+}
+.tooltip_meaning_example{
+    color: #FFEB3B;
+}
+.tooltip_meaning_example > span{
+    color: darkgreen;
+    font-weight: 600;
+}
+.tooltip_word {
+    color: #03A9F4;
+    font-size: small;
+}

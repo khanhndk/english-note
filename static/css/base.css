@@ -15,7 +15,6 @@
 	 line-height: 1.4;
 	 font-family: sans-serif;
 	 border-radius: 5px;
-	 overflow: hidden;
 	 z-index: 0;
 }
  .blog-card a {
@@ -92,6 +91,7 @@
 	 background: #fff;
 	 position: relative;
 	 z-index: 1;
+	 width: 100%;
 }
  .blog-card .description h1, .blog-card .description h2 {
 	 font-family: Poppins, sans-serif;
@@ -199,11 +199,21 @@
     color: darkgreen;
     font-weight: 600;
 }
+.button{
+    color: darkslategrey;
+    margin: 20px;
+    background-color: beige;
+    padding: 8px;
+    border-radius: 5px;
+    border: solid;
+    width: 100px;
+    display: inline-block;
+}
  @media (min-width: 640px) {
 	 .blog-card {
 		 flex-direction: row;
 		 max-width: 700px;
-	}
+	 }
 	 .blog-card .description:before {
 		 transform: skewX(-3deg);
 		 content: "";

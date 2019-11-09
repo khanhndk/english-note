@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block heading %}
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+<link rel="stylesheet" href="static/css/topic.css">
+<link rel="stylesheet" href="static/css/tooltip.css">
+{% endblock %}
+{% block body %}
+
+<div class="blog-card">
+    <div class="description">
+        <a href="a?qid={{qid}}&t={{topic}}"><i class="fa fa-edit" style="float: right;"></i></a>
+        <h1>{{topic}}</h1>
+        <h2 style="color:#1A237E">
+            Question #{{qid}}: {{question_info.question}}
+        </h2>
+        {% autoescape false %}
+        <div id="editor" class="sentence" style="min-height: unset;">
+            {{question_info.answer}}
+        </div>
+        {% endautoescape %}
+    </div>
+</div>
+
+<div style="text-align:center">
+    <a href="va?qid={{qid|int-1}}&t={{topic}}"><span class="button">Previous</span></a>
+    <a href="va?qid={{qid|int+1}}&t={{topic}}"><span class="button">Next</span></a>
+</div>
+<script>
+jQuery('.highlight').each(function() {
+    var current_element = $(this);
+    current_element.addClass('tooltip');
+});
+
+jQuery('.dictionary').each(function() {
+    var current_element = $(this);
+    current_element.addClass('tooltip-item');
+    var word = current_element.text();
+    var posting = $.get('v?r=json&w='+ word);
+
+    posting.done(function( response ) {
+        console.log(response)
+        var content = '<span class="tooltip-content clearfix">';
+        content += '<span class="tooltip-text">';
+        content += '<span class="tooltip_word">' + word +'</span><br/>';
+        content += '<span>[' + response.pronunciation + ']</span><br/><br/>';
+        for(var im = 0; im < response.meanings.length; im++){
+            content += '<span class="tooltip_meaning_number">' + (im+1).toString() + '</span>. ';
+            content += '<span class="tooltip_meaning_explain">' + response.meanings[im].explain + '</span> '
+            for(var it = 0; it < response.meanings[im].thesaurus.length; it++){
+                content += '<span class="tooltip_meaning_thesaurus">' + response.meanings[im].thesaurus[it] + '</span> ';
+            }
+            content += '<br/>';
+            for(var it = 0; it < response.meanings[im].examples.length; it++){
+                content += '<span class="tooltip_meaning_example">&#8226; ' + response.meanings[im].examples[it] + '</span><br/>';
+            }
+        }
+        content += '<span style="text-align:right; display: block"><a href="e?w=' + word + '">edit</a>|<a href="v?w=' + word + '">view</a></span>';
+        content += '</span>';
+        content += '</span>';
+        $(content).insertAfter(current_element);
+    });
+    //$("<span>xxxx</span>").insertAfter(current_element);
+});
+</script>
+{% endblock %}
+
+<!--
+<div id="editor" class="sentence" style="min-height: unset;">
+            <p>I am a <span class="highlight tooltip">teacher of <span class="dictionary tooltip-item">computer</span>
+          <span class="tooltip-content clearfix">
+            <span class="tooltip-text">
+                <span class="tooltip_word">student</span><br/>
+                <span>[ˈstjuːdənt $ ˈstuː-,]</span><br/><br/>
+                <span class="tooltip_meaning_number">1</span>. <span class="tooltip_meaning_explain">someone whose job is to teach, especially in a school</span>
+                <span class="tooltip_meaning_thesaurus">lecturer</span> <span class="tooltip_meaning_thesaurus">professor</span><br/>
+                <span class="tooltip_meaning_example">&#8226; a primary school teacher</span><br/>
+                <span class="tooltip_meaning_example">&#8226; Jack Spencer was a high school teacher and a coach</span><br/>
+                <span class="tooltip_meaning_number">2</span>. <span class="tooltip_meaning_explain">someone whose job is to teach, especially in a school</span>
+                <span class="tooltip_meaning_thesaurus">lecturer</span> <span class="tooltip_meaning_thesaurus">professor</span><br/>
+                <span class="tooltip_meaning_example">&#8226; a primary school teacher</span><br/>
+                <span class="tooltip_meaning_example">&#8226; Jack Spencer was a high school teacher and a coach</span><br/>
+                <span style="text-align:right; display: block"><a href="http://en.wikipedia.org/wiki/Euclid">edit</a>|<a href="http://en.wikipedia.org/wiki/Euclid">view</a></span>
+            </span>
+            </span>
+          science. </span>uclid of Alexandria, was a Gratician, </p>
+        </div>
+-->

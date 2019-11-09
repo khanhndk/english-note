@@ -1,0 +1,12 @@
+.highlight{
+    background-color: aquamarine;
+    padding: 2px 5px 2px 5px;
+    border-radius: 15px;
+}
+.sentence{
+    font-family: monospace;
+}
+
+.dictionary{
+    font-weight: bold;
+}
